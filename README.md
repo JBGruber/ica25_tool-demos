@@ -1,4 +1,4 @@
-# ICA 2025 tool demos
+# ICA 2025 tool demos <img src="qr.svg" align="right" height="138" alt="" />
 
 ## [Tool Demo] Traktok: Making TikTok Data Accessible for Research
 
@@ -9,8 +9,8 @@ which was reverse engineered to grant users access to more content. While it is 
 so, the combination both ways to retrieve data from the platform with an easy-to-understand consistent syntax is built
 to encourage TikTok research.
 
-Demo: [demo_traktok.qmd](demo_traktok.qmd)
-Package: https://jbgruber.github.io/traktok/
+- Demo: [demo_traktok.qmd](demo_traktok.qmd)
+- Package: https://jbgruber.github.io/traktok/
 
 ## [Tool Demo] Paperboy: A Collection of News Media Scrapers
 
@@ -23,5 +23,5 @@ publish their code and earn co-authorship on the package, while promising users 
 many websites in a consistent format. With 177 covered as of today and a default scraper that often works well
 enough, `paperboy` can already facilitate a large range of research projects.
 
-Demo: [demo_paperboy.qmd](demo_paperboy.qmd)
-Package: https://jbgruber.github.io/paperboy/
+- Demo: [demo_paperboy.qmd](demo_paperboy.qmd)
+- Package: https://jbgruber.github.io/paperboy/
