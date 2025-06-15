@@ -8,7 +8,9 @@ presentation: ICA25 --- 2025-06-15
 
 # Philosphy
 
-The philosophy of the `R` package paperboy is that the package is a repository for webscraping scripts for news media sites, with advanced features for quick data retrieval --- even for content behind log-ins or anti-scraping measures.
+The philosophy of the `R` package paperboy is that the package is a repository for web scraping scripts for news media sites, with advanced features for quick data retrieval --- even for content behind log-ins or anti-scraping measures.
+
+Goal: bring together Developers and Users of news web-scrapers
 
 # Installation
 
@@ -182,5 +184,6 @@ All done! Another site can be added!
 
 - cite the package
 - let me know if you have issues
-- become a contributor!
+- become a contributor/co-author!
+- advise me on an incentive structure
 
