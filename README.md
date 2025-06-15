@@ -1,4 +1,4 @@
-# ICA 2025 tool demos <img src="qr.svg" align="right" height="350" alt="" />
+# ICA 2025 tool demos <img src="qr.svg" align="right" height="450" alt="" />
 
 ## [Tool Demo] Traktok: Making TikTok Data Accessible for Research
 
