@@ -1,0 +1,249 @@
+---
+title: "[Tool Demo] `traktok` --- Making TikTok Data Accessible for Research"
+author: Johannes B. Gruber
+presentation: ICA25 --- 2025-06-15
+---
+
+![](traktok_logo.svg)
+
+```{r}
+tibble::tribble(
+  ~Description, ~Shorthand, ~Research_API, ~Hidden_API,
+  "search videos", "tt_search", "tt_search_api", "tt_search_hidden[^1]",
+  "get video detail (+file)", "tt_videos", "-", "tt_videos_hidden",
+  "get user videos", "tt_user_info", "tt_search_api", "tt_user_videos_hidden",
+  "get user info", "tt_user_info", "tt_user_info_api", "-",
+  "get comments under a video", "tt_comments", "tt_comments_api", "-",
+  "get who follows a user", "tt_get_follower", "tt_user_follower_api", "tt_get_follower_hidden",
+  "get who a user is following", "tt_get_following", "tt_user_following_api", "tt_get_following_hidden",
+  "get videos a user liked", "tt_get_liked", "tt_user_liked_videos_api", "-",
+  "get pinned videos of users", "tt_get_pinned", "tt_user_pinned_videos_api", "-",
+  "get videos in a playlist", "tt_playlist", "tt_playlist_api", "-",
+  "get raw video data", "-", "-", "tt_request_hidden",
+  "authenticate a session", "-", "auth_research", "auth_hidden"
+)
+```
+
+
+# Installation
+
+```{r}
+remotes::install_github("JBGruber/paperboy")
+```
+
+# Research API
+
+```{r}
+library(traktok)
+# auth_research()
+auth_check()
+```
+
+- securely stores your token
+- no need to worry about accidentally uploading it somewhere
+
+
+```{r}
+tt_query_videos("#rstats", max_pages = 2L)
+```
+
+- simple search for hashtag
+- default search yesterday to today
+
+
+```{r}
+tt_query_videos("#rstats",
+                max_pages = 2L,
+                start_date = as.Date("2023-11-01"),
+                end_date = as.Date("2023-11-29"))
+```
+
+- max search 30 days
+- possible to return to search
+- `last_query()` can be used when search fails
+
+
+```{r}
+query() |>                                # start by using query()
+  query_or(field_name = "hashtag_name",   # add an OR condition on the hashtag field
+           operation = "IN",              # the value should be IN the list of hashtags
+           field_values = "rstats") |>    # the hashtag field does not accept the #-symbol
+  query_or(field_name = "keyword",        # add another OR condition
+           operation = "IN",
+           field_values = "#rstats")
+```
+
+- fine-grained search is possible
+- `traktok` wraps the complicated search query in a tidyverse-style pipeline
+
+
+| Operator | Results are returned if...                 |
+| -------- | ------------------------------------------ |
+| AND      | ...all specified conditions are met        |
+| OR       | ...any of the specified conditions are met |
+| NOT      | ...the not conditions are not met          |
+
+: Boolean operators used by TikTok 
+
+
+| Operation | Results are returned if field_values are...     |
+| --------- | ----------------------------------------------- |
+| EQ        | equal to the value in the field                 |
+| IN        | equal to a value in the field                   |
+| GT        | greater than the value in the field             |
+| GTE       | greater than or equal to the value in the field |
+| LT        | lower than the value in the field               |
+| LTE       | lower than or equal to the value in the field   |
+
+: Condition operators used by TikTok
+
+
+```{r}
+search_df <- query() |>
+  query_and(field_name = "region_code",
+            operation = "IN",
+            field_values = c("JP", "US", "DE")) |>
+  query_or(field_name = "hashtag_name",
+            operation = "EQ", # rstats is the only hashtag
+            field_values = "rstats") |>
+  query_or(field_name = "keyword",
+           operation = "IN", # rstats is one of the keywords
+           field_values = "rstats") |>
+  query_not(operation = "EQ",
+            field_name = "video_length",
+            field_values = "SHORT") |>
+  tt_search_api(start_date = as.Date("2023-11-01"),
+                end_date = as.Date("2023-11-29"))
+
+search_df
+```
+
+- actually excellent way to get exactly the posts you are intersted in
+
+
+```{r}
+query() |>
+  query_and(field_name = "username",
+            operation = "EQ",
+            field_values = "kamalahq") |>
+  tt_search_api(start_date = as.Date("2024-08-01"),
+                end_date = as.Date("2024-08-31"))
+```
+
+- you can also search for user videos
+- shorthand exists: `tt_user_videos_api`
+
+
+```{r}
+tt_comments_api(video_id = "7409348493329911082")
+```
+
+- another interesting endpoint delivers comments
+
+```{r}
+tt_user_follower_api("kamalahq")
+tt_user_following_api("kamalahq")
+```
+
+- snowball sampling of accounts is possible through follower and following endpoints
+
+# 'Hidden' API
+
+- Reverse engineered how the tiktok.com website retrieves data
+- [Thanks to Deen Freelon's `Pyktok`!]
+
+```{r}
+auth_hidden("tiktok_cookies.txt")
+```
+
+- 'authenticate' through usage of cookies
+
+```{r}
+kamalahq_info <- tt_user_info_hidden("kamalahq")
+```
+
+- interestingly you often get more information with hidden API
+
+```{r}
+kamalahq_follower <- tt_get_follower_hidden(
+  kamalahq_info$secUid,
+  max_results = 100L
+)
+nrow(kamalahq_following)
+```
+
+- snowball sampling possible to some degree (but website has a hard limit how many accounts you can see)
+
+```{r}
+videos_df <- tt_videos_hidden(
+  video_urls = search_df$video_id, 
+  dir = "vids",
+  cache_dir = "rstats"
+)
+```
+
+# Combining the APIs
+
+```{r}
+#| eval: false
+results_api <- tt_user_videos_api(
+  username = "afdfraktionimbundestag",
+  since = "2020-01-01"
+)
+```
+
+The same function also exists for the 'hidden' API:
+
+```{r}
+#| eval: false
+results_scraping <- tt_user_videos_hidden(
+  username = "afdfraktionimbundestag", 
+  solve_captchas = TRUE
+)
+```
+
+- this can take a while since you get hit by captchas (a browser window jumps to the from of your screen so you can solve it)
+
+```{r}
+results_api <-      readRDS("data/results_api.rds")
+results_scraping <- readRDS("data/results_scraping.rds")
+```
+
+
+```{r}
+nrow(results_api)
+nrow(results_scraping)
+```
+
+
+```{r}
+library(tidyverse)
+results_api |> 
+  full_join(results_scraping, by = "video_id") |> 
+    filter(is.na(create_time) | is.na(video_timestamp)) |>
+  mutate(
+    available_on = case_when(
+      is.na(create_time) ~ "website",
+      is.na(video_timestamp) ~ "api"
+    ),
+    video_time = as.POSIXct(ifelse(is.na(create_time), 
+                                   video_timestamp, 
+                                   create_time)),
+    video_url_unformatted = paste0("https://www.tiktok.com/@afdfraktionimbundestag/video/", video_id),
+    video_url = glue::glue('<a href="{video_url_unformatted}" target="_blank">Link</a>')
+  ) |> 
+  select(video_id, available_on, video_time, video_url_unformatted) |> 
+  View()
+```
+
+# limitations
+
+- 1000 requests / 100,000 records per day 
+- incomplete results (see *Gaslight, Gather, Gatekeep?:  Comparing Access Strategies for Research on TikTok Data*, Mo 10:30)
+- limited search possibilities for 'hidden' API
+
+# How can you help?
+
+- cite the package
+- let me know if you have issues
+- let me know if there are new API endpoint or functions that I don't cover yet
