@@ -1,17 +1,5 @@
 # ICA 2025 tool demos <img src="qr.svg" align="right" height="450" alt="" />
 
-## [Tool Demo] Traktok: Making TikTok Data Accessible for Research
-
-The social media platform TikTok has surged in societal and political significance, underscoring the need for
-communication researchers to study its content and dynamics. `traktok` is an `R` package that combines an
-implementation of the TikTok Research API with access to TikTok content through web-scraping and the 'hidden' API,
-which was reverse engineered to grant users access to more content. While it is neither the first nor only tool to do
-so, the combination both ways to retrieve data from the platform with an easy-to-understand consistent syntax is built
-to encourage TikTok research.
-
-- Demo: [demo_traktok.qmd](demo_traktok.qmd)
-- Package: https://jbgruber.github.io/traktok/
-
 ## [Tool Demo] Paperboy: A Collection of News Media Scrapers
 
 The philosophy of the R package paperboy is that the package is a repository for webscraping scripts for
@@ -25,3 +13,16 @@ enough, `paperboy` can already facilitate a large range of research projects.
 
 - Demo: [demo_paperboy.qmd](demo_paperboy.qmd)
 - Package: https://jbgruber.github.io/paperboy/
+
+## [Tool Demo] Traktok: Making TikTok Data Accessible for Research
+
+The social media platform TikTok has surged in societal and political significance, underscoring the need for
+communication researchers to study its content and dynamics. `traktok` is an `R` package that combines an
+implementation of the TikTok Research API with access to TikTok content through web-scraping and the 'hidden' API,
+which was reverse engineered to grant users access to more content. While it is neither the first nor only tool to do
+so, the combination both ways to retrieve data from the platform with an easy-to-understand consistent syntax is built
+to encourage TikTok research.
+
+- Demo: [demo_traktok.qmd](demo_traktok.qmd)
+- Package: https://jbgruber.github.io/traktok/
+
