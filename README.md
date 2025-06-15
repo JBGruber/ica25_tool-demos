@@ -13,6 +13,7 @@ enough, `paperboy` can already facilitate a large range of research projects.
 
 - Demo: [demo_paperboy.qmd](demo_paperboy.qmd)
 - Package: https://jbgruber.github.io/paperboy/
+- Paper: [paper_paperboy.pdf][paper_paperboy.pdf]
 
 ## [Tool Demo] Traktok: Making TikTok Data Accessible for Research
 
@@ -25,4 +26,4 @@ to encourage TikTok research.
 
 - Demo: [demo_traktok.qmd](demo_traktok.qmd)
 - Package: https://jbgruber.github.io/traktok/
-
+- Paper: [paper_traktok.pdf][paper_traktok.pdf]
